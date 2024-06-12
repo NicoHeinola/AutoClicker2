@@ -6,7 +6,7 @@ const TextInput = (props) => {
     const { type, placeholder, value, onChange, className, min, max } = props;
 
     const classNameValidated = className ? ` ${className}` : "";
-    const valueValidated = (value !== undefined || value !== null) ? value : "";
+    const valueValidated = (value !== undefined && value !== null) ? value : "";
 
     const [focus, setFocus] = useState(false);
 
