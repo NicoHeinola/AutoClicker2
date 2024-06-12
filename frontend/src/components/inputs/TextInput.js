@@ -3,7 +3,7 @@ import "styles/components/inputs/textinput.scss";
 
 const TextInput = (props) => {
 
-    const { type, placeholder, value, onChange, className, min, max } = props;
+    const { type, placeholder, value, onChange, className, min, max, disabled } = props;
 
     const classNameValidated = className ? ` ${className}` : "";
     const valueValidated = (value !== undefined && value !== null) ? value : "";
@@ -12,6 +12,7 @@ const TextInput = (props) => {
 
     const focusClass = focus ? " focus" : "";
     const hasTextClass = valueValidated !== "" ? " has-text" : "";
+    const disabledClass = disabled ? " disabled" : "";
 
     const onInputChange = (e) => {
         let newValue = e.target.value;
@@ -38,8 +39,8 @@ const TextInput = (props) => {
     }
 
     return (
-        <div className={"text-input" + classNameValidated + focusClass + hasTextClass}>
-            <input value={valueValidated} onChange={onInputChange} type={type} onBlur={() => setFocus(false)} onFocus={() => setFocus(true)} />
+        <div className={"text-input" + classNameValidated + focusClass + hasTextClass + disabledClass}>
+            <input disabled={disabled} value={valueValidated} onChange={onInputChange} type={type} onBlur={() => setFocus(false)} onFocus={() => setFocus(true)} />
             <p className={"placeholder" + hasTextClass}>{placeholder}</p>
             <div className={"underline" + focusClass}></div>
         </div >

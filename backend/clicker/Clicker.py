@@ -6,13 +6,18 @@ class Clicker:
         Clicker.clicker = self
 
         self._click_button: str = ""
-        self.click_action: str = ""
-        self.click_x: int = 0
-        self.click_y: int = 0
-        self.clicks_per_second: int = 0
-        self.click_interval_ms: float = 0
-        self.click_speed_type: str = ""
-        self.click_position_type: str = ""
+        self._click_action: str = ""
+        self._click_x: int = 0
+        self._click_y: int = 0
+        self._clicks_per_second: int = 0
+        self._click_interval_ms: float = 0
+        self._click_speed_type: str = ""
+        self._click_position_type: str = ""
+
+        self._play_state: str = "stopped"
+
+    def get_play_state(self) -> str:
+        return self._play_state
 
     def deserialize(self, data: dict) -> None:
         if "click-button" in data:

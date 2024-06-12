@@ -8,6 +8,12 @@
     width: 100%;
     height: 35px;
 
+    transition: all $global-animation-duration;
+
+    &.disabled {
+        filter: brightness(50%);
+    }
+
     input {
         background: none;
 
@@ -24,7 +30,7 @@
         }
     }
 
-    &:is(:hover, .focus):not(.focus) {
+    &:is(:hover, .focus):not(.focus):not(.disabled) {
         .underline {
             width: 80px;
         }

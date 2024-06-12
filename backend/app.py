@@ -7,6 +7,7 @@ import socket
 import os
 from dotenv import load_dotenv
 from clicker.Clicker import Clicker
+from controllers.click.click_controller import ClickController
 from controllers.settings.settings_controller import SettingsController
 from database.database import db
 from utils.SettingsUtil import SettingsUtil
@@ -62,6 +63,7 @@ with app.app_context():
     upgrade()
 
 SettingsController(app, socketio)
+ClickController(app, socketio)
 
 Clicker()
 SettingsUtil.initialize_settings(app)

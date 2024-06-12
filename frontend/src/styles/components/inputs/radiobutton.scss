@@ -13,9 +13,16 @@
     padding: 10px;
 
     border-radius: $global-border-radius;
-    cursor: pointer;
 
-    &:hover {
+    transition: all $global-animation-duration;
+
+    &.disabled {
+        filter: brightness(50%);
+    }
+
+    &:hover:not(.disabled) {
+        cursor: pointer;
+
         &::after {
             background: rgba(255, 255, 255, 0.1);
         }

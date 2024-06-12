@@ -1,11 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
-import settingAPI from "apis/settingAPI";
+import clickAPI from "apis/clickAPI";
 
 const initialState = {
     playState: {}
 };
 
-const settingsSlice = createSlice({
+const clickSlice = createSlice({
     name: 'click',
     initialState,
     reducers: {
@@ -16,23 +16,29 @@ const settingsSlice = createSlice({
 });
 
 const setPlayStateCall = (playState) => async (dispatch) => {
-    settingAPI.updateSettings(settingsToUpdate);
-    dispatch(settingsSlice.actions.updateSettings(settingsToUpdate));
+    dispatch(clickSlice.actions.setPlayState(playState));
 };
 
 const startClickingCall = () => async (dispatch) => {
-    settingAPI.updateSettings(settingsToUpdate);
-    dispatch(settingsSlice.actions.updateSettings(settingsToUpdate));
+    clickAPI.startClicking();
+    dispatch(clickSlice.actions.setPlayState("playing"));
 };
 
 const stopClickingCall = () => async (dispatch) => {
-    settingAPI.updateSettings(settingsToUpdate);
-    dispatch(settingsSlice.actions.updateSettings(settingsToUpdate));
+    clickAPI.stopClicking();
+    dispatch(clickSlice.actions.setPlayState("stopped"));
+};
+
+const loadPlayStateCall = () => async (dispatch) => {
+    const response = await clickAPI.getPlayState();
+    dispatch(clickSlice.actions.setPlayState(response.data));
 };
 
 export {
-    updateSettingsCall,
-    loadSettingsCall
+    setPlayStateCall,
+    startClickingCall,
+    stopClickingCall,
+    loadPlayStateCall
 };
 
-export default settingsSlice.reducer;
+export default clickSlice.reducer;

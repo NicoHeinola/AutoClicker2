@@ -3,7 +3,7 @@ import axiosInstance from "./axiosInstance";
 const BASE_ROUTE = "/click"
 
 const startClicking = () => {
-    return axiosInstance.put(`${BASE_ROUTE}/start`).then(response => {
+    return axiosInstance.post(`${BASE_ROUTE}/start`).then(response => {
         return response;
     }).catch(e => {
         throw e;
@@ -11,7 +11,15 @@ const startClicking = () => {
 }
 
 const stopClicking = () => {
-    return axiosInstance.put(`${BASE_ROUTE}/stop`).then(response => {
+    return axiosInstance.post(`${BASE_ROUTE}/stop`).then(response => {
+        return response;
+    }).catch(e => {
+        throw e;
+    })
+}
+
+const getPlayState = () => {
+    return axiosInstance.get(`${BASE_ROUTE}/state`).then(response => {
         return response;
     }).catch(e => {
         throw e;
@@ -20,7 +28,8 @@ const stopClicking = () => {
 
 const functions = {
     startClicking,
-    stopClicking
+    stopClicking,
+    getPlayState
 };
 
 export default functions;

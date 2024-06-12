@@ -4,6 +4,12 @@
     position: relative;
     height: 35px;
 
+    transition: all $global-animation-duration;
+
+    &.disabled {
+        filter: brightness(50%);
+    }
+
     button {
         position: relative;
         width: 100%;
@@ -21,14 +27,14 @@
         border-radius: $global-border-radius;
         border: 2px solid $accent-color;
 
-        &:hover {
+        &:hover:not(.disabled) {
             color: black;
             background-position: -200%;
             mix-blend-mode: screen;
             cursor: pointer;
         }
 
-        &:active {
+        &:active:not(.disabled) {
             filter: brightness(60%);
         }
     }
