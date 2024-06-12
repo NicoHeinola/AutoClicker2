@@ -30,6 +30,7 @@ const TextInput = (props) => {
             }
         }
 
+        newValue = Math.round(newValue);
 
         if (onChange) {
             onChange(newValue);

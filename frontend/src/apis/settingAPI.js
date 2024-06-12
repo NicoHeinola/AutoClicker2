@@ -1,25 +1,9 @@
 import axiosInstance from "./axiosInstance";
 
-const BASE_ROUTE = "/setting"
+const BASE_ROUTE = "/settings"
 
 const updateSettings = (settingsToUpdate) => {
-    return axiosInstance.post(`${BASE_ROUTE}`, settingsToUpdate).then(response => {
-        return response;
-    }).catch(e => {
-        throw e;
-    })
-}
-
-const getSettingDefaults = () => {
-    return axiosInstance.get(`${BASE_ROUTE}/default-values`).then(response => {
-        return response;
-    }).catch(e => {
-        throw e;
-    })
-}
-
-const getSettingDefault = (settingName) => {
-    return axiosInstance.get(`${BASE_ROUTE}/default-value`, { "name": settingName }).then(response => {
+    return axiosInstance.put(`${BASE_ROUTE}`, settingsToUpdate).then(response => {
         return response;
     }).catch(e => {
         throw e;
@@ -27,7 +11,7 @@ const getSettingDefault = (settingName) => {
 }
 
 const getAllSettings = () => {
-    return axiosInstance.get(`${BASE_ROUTE}/all`).then(response => {
+    return axiosInstance.get(`${BASE_ROUTE}`).then(response => {
         return response;
     }).catch(e => {
         throw e;
@@ -36,8 +20,6 @@ const getAllSettings = () => {
 
 const functions = {
     updateSettings,
-    getSettingDefaults,
-    getSettingDefault,
     getAllSettings
 };
 

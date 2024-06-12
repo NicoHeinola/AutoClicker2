@@ -55,7 +55,9 @@
         "height": 520,
         "resizable": true,
         "title": "AutoClicker2",
-        "width": 720
+        "width": 720,
+        "minWidth": 700,
+        "minHeight": 520
       }
     ]
   }

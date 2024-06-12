@@ -2,21 +2,23 @@ import { createSlice } from '@reduxjs/toolkit';
 import settingAPI from "apis/settingAPI";
 
 const initialState = {
-    allSettings: {},
-    settingDefaults: {},
+    settings: {}
 };
 
 const settingsSlice = createSlice({
     name: 'settings',
     initialState,
     reducers: {
-        updateSettings: (state, settingsToUpdate) => {
-            let updatedSettings = { ...state.allSettings, ...settingsToUpdate.payload };
-            state.allSettings = updatedSettings;
+        setSettings: (state, settings) => {
+            state.settings = settings.payload;
         },
-        updateSettingDefaults: (state, newDefaults) => {
-            let updatedDefaults = { ...state.settingDefaults, ...newDefaults.payload };
-            state.settingDefaults = updatedDefaults;
+        updateSettings: (state, settings) => {
+            let newSettings = { ...state.settings };
+            let toUpdate = settings.payload;
+            for (let key in toUpdate) {
+                newSettings[key] = toUpdate[key];
+            }
+            state.settings = newSettings;
         },
     },
 });
@@ -32,16 +34,9 @@ const loadSettingsCall = () => async (dispatch) => {
     dispatch(settingsSlice.actions.updateSettings(allSettings));
 };
 
-const loadSettingDefaultsCall = () => async (dispatch) => {
-    const response = await settingAPI.getSettingDefaults();
-    let defaults = response.data;
-    dispatch(settingsSlice.actions.updateSettingDefaults(defaults));
-};
-
 export {
     updateSettingsCall,
-    loadSettingsCall,
-    loadSettingDefaultsCall
+    loadSettingsCall
 };
 
 export default settingsSlice.reducer;
