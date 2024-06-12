@@ -1,0 +1,74 @@
+@import "styles/variables.scss";
+
+.text-input {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    width: 100%;
+    height: 35px;
+
+    input {
+        background: none;
+
+        height: 30px;
+        width: 100%;
+        border: none;
+        outline: none;
+
+        border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+
+        &::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    }
+
+    &:is(:hover, .focus):not(.focus) {
+        .underline {
+            width: 80px;
+        }
+    }
+
+    .placeholder {
+        position: absolute;
+        left: 3px;
+        top: 100%;
+        transform: translateY(-120%);
+        pointer-events: none;
+
+        transition: all $global-animation-duration;
+        scale: 1;
+
+        filter: brightness(80%);
+        opacity: 0.8;
+
+        &.has-text {
+            top: -5px;
+            transform: translateY(0);
+            left: 0px;
+            font-size: 10px;
+
+            opacity: 1;
+            filter: brightness(100%)
+        }
+    }
+
+    .underline {
+        position: absolute;
+
+        width: 70px;
+        height: 2px;
+
+        bottom: 0;
+        z-index: 50;
+
+        background: $accent-color;
+
+        transition: all $global-animation-duration;
+
+        &.focus {
+            width: 100%;
+        }
+    }
+}
