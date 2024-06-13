@@ -9,6 +9,7 @@ import { loadSettingsCall, updateSettingsCall } from "store/reducers/settingsRed
 import { useCallback, useEffect } from "react";
 import { loadPlayStateCall, startClickingCall, stopClickingCall } from "store/reducers/clickReducer";
 import KeyboardListeningInput from "components/inputs/KeyboardListeningInput";
+import PositionPicker from "components/inputs/PositionPicker";
 
 const FrontPageView = (props) => {
 
@@ -63,6 +64,11 @@ const FrontPageView = (props) => {
         updateSettingsCall({ "click-y": value });
     }, [updateSettingsCall]);
 
+    const setClickPosition = useCallback((x, y) => {
+        setClickX(x);
+        setClickY(y);
+    }, [setClickX, setClickY]);
+
     const setClickButton = useCallback((value) => {
         updateSettingsCall({ "click-button": value });
     }, [updateSettingsCall]);
@@ -80,16 +86,28 @@ const FrontPageView = (props) => {
     }, [stopClickingCall]);
 
     const setStartKey = useCallback((code, name) => {
+        if (name !== "" && (name === stopKeyDisplay || name === toggleKeyDisplay)) {
+            return;
+        }
+
         updateSettingsCall({ "start-hotkey": code, "start-hotkey-display": name });
-    }, [updateSettingsCall]);
+    }, [updateSettingsCall, stopKeyDisplay, toggleKeyDisplay]);
 
     const setStopKey = useCallback((code, name) => {
+        if (name !== "" && (name === startKeyDisplay || name === toggleKeyDisplay)) {
+            return;
+        }
+
         updateSettingsCall({ "stop-hotkey": code, "stop-hotkey-display": name });
-    }, [updateSettingsCall]);
+    }, [updateSettingsCall, startKeyDisplay, toggleKeyDisplay]);
 
     const setToggleKey = useCallback((code, name) => {
+        if (name !== "" && (name === startKeyDisplay || name === stopKeyDisplay)) {
+            return;
+        }
+
         updateSettingsCall({ "toggle-hotkey": code, "toggle-hotkey-display": name });
-    }, [updateSettingsCall]);
+    }, [updateSettingsCall, startKeyDisplay, stopKeyDisplay]);
 
     const clickSpeed = (speedType === "cps") ? clicksPerSecond : clickIntervalMS;
     const clickSpeedInputPlaceholder = (speedType === "cps") ? "Clicks per second" : "Click interval (ms)"
@@ -103,7 +121,7 @@ const FrontPageView = (props) => {
                         <RadioButton disabled={isPlaying} onChecked={setSpeedType} value="cps" text="Clicks per second" isChecked={speedType === "cps"} />
                         <RadioButton disabled={isPlaying} onChecked={setSpeedType} value="interval" text="Interval (ms)" isChecked={speedType === "interval"} />
                     </div>
-                    <TextInput disabled={isPlaying} onChange={clickSpeedChangeFunc} value={clickSpeed} min={0} max={100000000000} type="number" placeholder={clickSpeedInputPlaceholder} />
+                    <TextInput maxDecimals={-1} disabled={isPlaying} onChange={clickSpeedChangeFunc} value={clickSpeed} min={0} max={100000000000} type="number" placeholder={clickSpeedInputPlaceholder} />
                 </GroupBox>
             </div>
             <div className="row-box w-100 grow">
@@ -124,7 +142,7 @@ const FrontPageView = (props) => {
                         <RadioButton disabled={isPlaying} onChecked={setPositionType} value="current" text="Follow" isChecked={positionType === "current"} />
                         <RadioButton disabled={isPlaying} onChecked={setPositionType} value="at" text="Pick" isChecked={positionType === "at"} />
                     </div>
-                    <CustomButton disabled={isPlaying || followMouse} >Pick a position</CustomButton>
+                    <PositionPicker onPick={setClickPosition} disabled={isPlaying || followMouse}>Pick a position</PositionPicker>
                     <div className="row-box">
                         <TextInput disabled={isPlaying || followMouse} type="number" onChange={setClickX} placeholder="X" min={0} max={9999999999} value={clickX}></TextInput>
                         <TextInput disabled={isPlaying || followMouse} type="number" onChange={setClickY} placeholder="Y" min={0} max={9999999999} value={clickY}></TextInput>
@@ -141,12 +159,8 @@ const FrontPageView = (props) => {
                 </GroupBox>
             </div>
             <div className="row-box w-100 grow">
-                <GroupBox title="Other" className="w-50">
-                </GroupBox>
-            </div>
-            <div className="row-box w-100 grow">
-                <CustomButton disabled={isPlaying} onClick={startClicking} className="grow">Start</CustomButton>
-                <CustomButton disabled={!isPlaying} onClick={stopClicking} className="grow">Stop</CustomButton>
+                <CustomButton disabled={isPlaying} onClick={startClicking} className="w-50">Start</CustomButton>
+                <CustomButton disabled={!isPlaying} onClick={stopClicking} className="w-50">Stop</CustomButton>
             </div>
         </div>
     )

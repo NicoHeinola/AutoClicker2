@@ -32,6 +32,12 @@
         }
     }
 
+    &:active:not(.disabled):not(.checked) {
+        &::after {
+            background: rgba(255, 255, 255, 0.05);
+        }
+    }
+
     &::after {
         content: "";
         position: absolute;

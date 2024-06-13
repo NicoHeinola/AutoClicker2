@@ -3,10 +3,29 @@ import "styles/components/inputs/textinput.scss";
 
 const TextInput = (props) => {
 
-    const { type, placeholder, value, onChange, className, min, max, disabled, allowTyping = true, icons = [] } = props;
+    const { type, placeholder, value = "", onChange, className, min, max, disabled, allowTyping = true, icons = [], maxDecimals = 0 } = props;
+
+    const validateNumberDecimals = (number) => {
+        if (maxDecimals > -1) {
+            let stringNumber = `${number}`
+            let splitNumber = stringNumber.split(".");
+
+            if (splitNumber.length > 1) {
+                const wholePart = splitNumber[0];
+                let decimalPart = splitNumber[1];
+                decimalPart = decimalPart.substring(0, maxDecimals);
+                console.log(decimalPart);
+                decimalPart = decimalPart.replace(/\.?0+$/, '');
+                const newNumberString = `${wholePart}.${decimalPart}`
+                number = Number(newNumberString);
+            }
+        }
+
+        return number;
+    }
 
     const classNameValidated = className ? ` ${className}` : "";
-    const valueValidated = (value !== undefined && value !== null) ? value : "";
+    const valueValidated = (type === "number") ? Number(value) : value;
 
     const [focus, setFocus] = useState(false);
 
@@ -20,19 +39,25 @@ const TextInput = (props) => {
 
         if (type === "number") {
             newValue = Number(newValue);
+            let newValueValidated = newValue;
 
             // Min and max number checks
             let minNumber = Number(min);
             let maxNumber = Number(max);
 
-            if (!isNaN(minNumber) && newValue < minNumber) {
-                newValue = minNumber;
-            } else if (!isNaN(maxNumber) && newValue > maxNumber) {
-                newValue = maxNumber;
+            if (!isNaN(minNumber) && newValueValidated < minNumber) {
+                newValueValidated = minNumber;
+            } else if (!isNaN(maxNumber) && newValueValidated > maxNumber) {
+                newValueValidated = maxNumber;
             }
+
+            newValueValidated = validateNumberDecimals(newValueValidated);
+            newValue = newValueValidated
         }
 
-        newValue = Math.round(newValue);
+        if (newValue === value) {
+            return;
+        }
 
         if (onChange) {
             onChange(newValue);

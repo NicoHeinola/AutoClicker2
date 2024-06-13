@@ -18,13 +18,16 @@ const useDisableHotkeys = () => {
                 event.preventDefault();
             }
 
+            // Disable refresh
+            /*else if (isCtrlOrCmd && key === 'r') {
+                event.preventDefault();
+            }*/
+
             const notAllowedKeys = { "f5": null, "f6": null, "f7": null, "f8": null, "f9": null, "f10": null, "f11": null, "f12": null };
 
-            if (event.key in notAllowedKeys) {
+            if (key in notAllowedKeys) {
                 event.preventDefault();
             }
-
-            event.preventDefault();
         }
 
         document.addEventListener('keydown', handleKeyDown);

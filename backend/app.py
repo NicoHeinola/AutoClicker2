@@ -6,6 +6,8 @@ from flask_cors import CORS
 import socket
 import os
 from dotenv import load_dotenv
+from controllers.app.settings_controller import AppController
+from gui.systray.system_tray import SystemTray
 from utils.click.clicker import Clicker
 from controllers.click.click_controller import ClickController
 from controllers.settings.settings_controller import SettingsController
@@ -13,7 +15,6 @@ from database.database import db
 from utils.hotkeys.hotkey_manager import HotkeyManager
 from utils.hotkeys.hotkey_socket import HotkeySocket
 from utils.settings.settings_util import SettingsUtil
-import logging
 from logging_setup import logger
 
 
@@ -31,6 +32,15 @@ def is_port_in_use(host: str, port: int):
         return False
 
 
+def open_frontend():
+    front_path: str = os.path.join(os.getcwd(), "frontend", "AutoClicker2.exe")
+
+    if not os.path.exists(front_path):
+        return
+
+    os.startfile(front_path)
+
+
 # Load .env file
 BASEDIR: str = os.path.abspath(os.path.dirname(__file__))
 load_dotenv(os.path.join(BASEDIR, ".env"))
@@ -38,12 +48,6 @@ load_dotenv(os.path.join(BASEDIR, ".env"))
 port: int = int(os.getenv("PORT"))
 host: str = os.getenv("HOST")
 build_mode: str = os.getenv("BUILD_MODE")
-
-# If port is in use, quit
-if build_mode == "RELASE":
-    if is_port_in_use(host, port):
-        logger.critical("The port {port} is already in use!")
-        sys.exit(-1)
 
 app: Flask = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
@@ -68,15 +72,42 @@ with app.app_context():
     # Apply the latest migrations if the database already exists
     upgrade()
 
-hotkey_manager: HotkeyManager = HotkeyManager()
-hotkey_manager.start_listening_to_keys()
-hotkey_socket: HotkeySocket = HotkeySocket(hotkey_manager, app, socketio)
+if os.environ.get("WERKZEUG_RUN_MAIN") == "true":
+    # Frontend settings and basic checks
+    if build_mode == "RELEASE":
+        open_frontend()
 
-SettingsController(app, socketio, hotkey_socket)
-ClickController(app, socketio)
+        if is_port_in_use(host, port):
+            logger.critical("The port {port} is already in use!")
+            sys.exit(0)
 
-Clicker()
-SettingsUtil.initialize_settings(app)
+    # Hotkeys
+    hotkey_manager: HotkeyManager = HotkeyManager()
+    hotkey_manager.start_listening_to_keys()
+    hotkey_socket: HotkeySocket = HotkeySocket(hotkey_manager, app, socketio)
+
+    # System tray
+    def on_exit():
+        if build_mode == "RELEASE":
+            sys.exit(0)
+
+    def on_show():
+        if build_mode == "RELEASE":
+            open_frontend()
+
+    system_tray: SystemTray = SystemTray()
+    system_tray.on("exit", on_exit)
+    system_tray.on("show", on_show)
+    hotkey_socket.on("started-clicking", lambda: system_tray.set_is_clicking(True))
+    hotkey_socket.on("stopped-clicking", lambda: system_tray.set_is_clicking(False))
+
+    # Controllers
+    SettingsController(app, socketio, hotkey_socket)
+    AppController(app, socketio, system_tray)
+    ClickController(app, socketio, system_tray)
+
+    # Utils
+    Clicker()
+    SettingsUtil.initialize_settings(app, hotkey_socket)
 
 socketio.run(app, host=host, port=port, debug=os.getenv("BUILD_MODE") == "DEBUG")
-hotkey_manager.stop_listening_to_keys()

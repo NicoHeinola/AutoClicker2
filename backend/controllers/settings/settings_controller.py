@@ -56,7 +56,7 @@ class SettingsController(BaseController):
             if "start-hotkey" in data:
                 keys: str = data["start-hotkey"]
                 settings.start_hotkey = keys
-                self._hotkey_socket.set_start_key(keys.split("+"))
+                self._hotkey_socket.set_start_key(keys)
 
             if "start-hotkey-display" in data:
                 settings.start_hotkey_display = data["start-hotkey-display"]
@@ -64,7 +64,7 @@ class SettingsController(BaseController):
             if "stop-hotkey" in data:
                 keys: str = data["stop-hotkey"]
                 settings.stop_hotkey = keys
-                self._hotkey_socket.set_stop_key(keys.split("+"))
+                self._hotkey_socket.set_stop_key(keys)
 
             if "stop-hotkey-display" in data:
                 settings.stop_hotkey_display = data["stop-hotkey-display"]
@@ -72,7 +72,7 @@ class SettingsController(BaseController):
             if "toggle-hotkey" in data:
                 keys: str = data["toggle-hotkey"]
                 settings.toggle_hotkey = keys
-                self._hotkey_socket.set_toggle_key(keys.split("+"))
+                self._hotkey_socket.set_toggle_key(keys)
 
             if "toggle-hotkey-display" in data:
                 settings.toggle_hotkey_display = data["toggle-hotkey-display"]

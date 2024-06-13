@@ -26,10 +26,19 @@ const getPlayState = () => {
     })
 }
 
+const getMousePosition = () => {
+    return axiosInstance.get(`${BASE_ROUTE}/mouse/position`).then(response => {
+        return response;
+    }).catch(e => {
+        throw e;
+    })
+}
+
 const functions = {
     startClicking,
     stopClicking,
-    getPlayState
+    getPlayState,
+    getMousePosition
 };
 
 export default functions;

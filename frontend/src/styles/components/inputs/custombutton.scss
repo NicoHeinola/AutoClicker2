@@ -27,6 +27,10 @@
         border-radius: $global-border-radius;
         border: 2px solid $accent-color;
 
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+
         &:hover:not(.disabled) {
             color: black;
             background-position: -200%;

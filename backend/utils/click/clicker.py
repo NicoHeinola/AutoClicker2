@@ -1,3 +1,4 @@
+from threading import Thread
 import time
 from utils.click.click_util import ClickUtil
 
@@ -50,6 +51,10 @@ class Clicker:
 
     def is_playing(self) -> bool:
         return self._play_state == "playing"
+
+    def start_clicking_thread(self) -> None:
+        thread: Thread = Thread(target=self.start_clicking)
+        thread.start()
 
     def start_clicking(self) -> None:
         """
@@ -121,8 +126,15 @@ class Clicker:
     def stop_clicking(self) -> None:
         self._play_state = "stopped"
 
-    def toggle_clicking(self) -> None:
+    def toggle_clicking(self) -> bool:
+        """
+        Toggles clicking thread.
+
+        :return: Returns true if it started clicking.
+        """
         if self.is_playing():
             self.stop_clicking()
+            return False
         else:
-            self.start_clicking()
+            self.start_clicking_thread()
+            return True
