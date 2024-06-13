@@ -8,7 +8,7 @@ const CustomButton = (props) => {
     const disabledClass = disabled ? " disabled" : "";
 
     const clicked = (e) => {
-        if (onClick) {
+        if (onClick && !disabled) {
             onClick(e)
         }
     }

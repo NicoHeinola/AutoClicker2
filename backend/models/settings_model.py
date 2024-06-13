@@ -9,7 +9,7 @@ class Settings(BaseModel):
     click_action = db.Column(db.String(9999), unique=False, nullable=False, default="click")
     click_x = db.Column(db.Integer, unique=False, nullable=False, default=100)
     click_y = db.Column(db.Integer, unique=False, nullable=False, default=100)
-    clicks_per_second = db.Column(db.Integer, unique=False, nullable=False, default=1)
+    clicks_per_second = db.Column(db.Float, unique=False, nullable=False, default=1)
     click_interval_ms = db.Column(db.Float, unique=False, nullable=False, default=1000.0)
     click_speed_type = db.Column(db.String(9999), unique=False, nullable=False, default="cps")
     click_position_type = db.Column(db.String(9999), unique=False, nullable=False, default="current")

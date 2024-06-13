@@ -36,7 +36,7 @@ class SettingsController(BaseController):
                 settings.click_y = int(data["click-y"])
 
             if "clicks-per-second" in data:
-                settings.clicks_per_second = int(data["clicks-per-second"])
+                settings.clicks_per_second = float(data["clicks-per-second"])
 
             if "click-interval-ms" in data:
                 settings.click_interval_ms = float(data["click-interval-ms"])

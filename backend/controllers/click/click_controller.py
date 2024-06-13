@@ -1,3 +1,4 @@
+from threading import Thread
 from typing import Dict
 from flask import Flask, make_response, request
 from flask_socketio import SocketIO
@@ -18,7 +19,12 @@ class ClickController(BaseController):
 
         @self._app.route(f"{base_route}/start", methods=["POST"])
         def start_clicking():
-            Clicker.clicker.start_clicking()
+            if Clicker.clicker.is_playing():
+                return make_response("", 200)
+
+            thread: Thread = Thread(target=Clicker.clicker.start_clicking)
+            thread.start()
+
             return make_response("", 200)
 
         @self._app.route(f"{base_route}/stop", methods=["POST"])
