@@ -7,6 +7,7 @@
     align-items: flex-end;
     width: 100%;
     height: 35px;
+    gap: 10px;
 
     transition: all $global-animation-duration;
 
@@ -14,67 +15,118 @@
         filter: brightness(50%);
     }
 
-    input {
-        background: none;
+    .input {
+        position: relative;
+        flex-basis: 100%;
 
-        height: 30px;
-        width: 100%;
-        border: none;
-        outline: none;
+        input {
+            background: none;
 
-        border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            height: 30px;
+            width: 100%;
+            border: none;
+            outline: none;
 
-        &::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
+            &::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+        }
+
+        .placeholder {
+            position: absolute;
+            left: 3px;
+            top: 100%;
+            width: 100%;
+            transform: translateY(-120%);
+            pointer-events: none;
+
+            text-overflow: ellipsis;
+            overflow: hidden;
+
+            transition: all $global-animation-duration;
+            scale: 1;
+
+            filter: brightness(80%);
+            opacity: 0.8;
+
+            &.has-text {
+                top: -10px;
+                transform: translateY(0);
+                left: 0px;
+                font-size: 10px;
+
+                opacity: 1;
+                filter: brightness(100%)
+            }
         }
     }
 
-    &:is(:hover, .focus):not(.focus):not(.disabled) {
+    &:is(:hover, .focus):not(.focus):not(.disabled):not(.dont-allow-typing) {
         .underline {
-            width: 80px;
-        }
-    }
-
-    .placeholder {
-        position: absolute;
-        left: 3px;
-        top: 100%;
-        transform: translateY(-120%);
-        pointer-events: none;
-
-        transition: all $global-animation-duration;
-        scale: 1;
-
-        filter: brightness(80%);
-        opacity: 0.8;
-
-        &.has-text {
-            top: -5px;
-            transform: translateY(0);
-            left: 0px;
-            font-size: 10px;
-
-            opacity: 1;
-            filter: brightness(100%)
+            .color {
+                width: 80px;
+            }
         }
     }
 
     .underline {
         position: absolute;
 
-        width: 70px;
+        width: 100%;
         height: 2px;
 
         bottom: 0;
         z-index: 50;
 
-        background: $accent-color;
-
-        transition: all $global-animation-duration;
+        background: rgba($secondary-color, 0.3);
 
         &.focus {
-            width: 100%;
+            .color {
+                width: 100%;
+            }
+        }
+
+        .color {
+            position: absolute;
+
+            background: $accent-color;
+
+            width: 70px;
+            height: 100%;
+            bottom: 0;
+            left: 0;
+
+            z-index: 100;
+
+            transition: all $global-animation-duration;
+        }
+    }
+
+    .icons {
+        position: relative;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        gap: 6px;
+        height: 100%;
+
+        .icon {
+            position: relative;
+
+            transition: all $global-animation-duration;
+            height: 90%;
+            aspect-ratio: 1;
+
+            &:hover:not(.disabled) {
+                scale: 1.1;
+                cursor: pointer;
+            }
+
+            &:active:not(.disabled) {
+                scale: 0.9;
+            }
         }
     }
 }

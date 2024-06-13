@@ -52,12 +52,12 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 520,
+        "height": 610,
         "resizable": true,
         "title": "AutoClicker2",
         "width": 720,
         "minWidth": 700,
-        "minHeight": 520
+        "minHeight": 610
       }
     ]
   }

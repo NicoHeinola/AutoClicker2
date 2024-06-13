@@ -6,9 +6,9 @@ import TextInput from "components/inputs/TextInput";
 import CustomButton from "components/inputs/CustomButton";
 import RadioButton from "components/inputs/RadioButton";
 import { loadSettingsCall, updateSettingsCall } from "store/reducers/settingsReducer";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { loadPlayStateCall, startClickingCall, stopClickingCall } from "store/reducers/clickReducer";
-
+import KeyboardListeningInput from "components/inputs/KeyboardListeningInput";
 
 const FrontPageView = (props) => {
 
@@ -28,53 +28,68 @@ const FrontPageView = (props) => {
     const clickX = settings["click-x"];
     const clickY = settings["click-y"];
 
+    const startKeyDisplay = settings["start-hotkey-display"];
+    const stopKeyDisplay = settings["stop-hotkey-display"];
+    const toggleKeyDisplay = settings["toggle-hotkey-display"];
+
     const isPlaying = playState === "playing";
     const followMouse = positionType === "current";
 
-
-    const setClicksPerSecond = (value) => {
+    const setClicksPerSecond = useCallback((value) => {
         const conversion = value > 0 ? 1000 / value : 0;
 
         updateSettingsCall({ "clicks-per-second": value, "click-interval-ms": conversion });
-    }
+    }, [updateSettingsCall]);
 
-    const setClickIntervalMS = (value) => {
+    const setClickIntervalMS = useCallback((value) => {
         const conversion = value > 0 ? 1000 / value : 0;
 
         updateSettingsCall({ "click-interval-ms": value, "clicks-per-second": conversion });
-    }
+    }, [updateSettingsCall]);
 
-    const setSpeedType = (value) => {
+    const setSpeedType = useCallback((value) => {
         updateSettingsCall({ "click-speed-type": value });
-    }
+    }, [updateSettingsCall]);
 
-    const setPositionType = (value) => {
+    const setPositionType = useCallback((value) => {
         updateSettingsCall({ "click-position-type": value });
-    }
+    }, [updateSettingsCall]);
 
-    const setClickX = (value) => {
+    const setClickX = useCallback((value) => {
         updateSettingsCall({ "click-x": value });
-    }
+    }, [updateSettingsCall]);
 
-    const setClickY = (value) => {
+    const setClickY = useCallback((value) => {
         updateSettingsCall({ "click-y": value });
-    }
+    }, [updateSettingsCall]);
 
-    const setClickButton = (value) => {
+    const setClickButton = useCallback((value) => {
         updateSettingsCall({ "click-button": value });
-    }
+    }, [updateSettingsCall]);
 
-    const setClickAction = (value) => {
+    const setClickAction = useCallback((value) => {
         updateSettingsCall({ "click-action": value });
-    }
+    }, [updateSettingsCall]);
 
-    const startClicking = () => {
+    const startClicking = useCallback(() => {
         startClickingCall();
-    }
+    }, [startClickingCall]);
 
-    const stopClicking = () => {
+    const stopClicking = useCallback(() => {
         stopClickingCall();
-    }
+    }, [stopClickingCall]);
+
+    const setStartKey = useCallback((code, name) => {
+        updateSettingsCall({ "start-hotkey": code, "start-hotkey-display": name });
+    }, [updateSettingsCall]);
+
+    const setStopKey = useCallback((code, name) => {
+        updateSettingsCall({ "stop-hotkey": code, "stop-hotkey-display": name });
+    }, [updateSettingsCall]);
+
+    const setToggleKey = useCallback((code, name) => {
+        updateSettingsCall({ "toggle-hotkey": code, "toggle-hotkey-display": name });
+    }, [updateSettingsCall]);
 
     const clickSpeed = (speedType === "cps") ? clicksPerSecond : clickIntervalMS;
     const clickSpeedInputPlaceholder = (speedType === "cps") ? "Clicks per second" : "Click interval (ms)"
@@ -118,7 +133,14 @@ const FrontPageView = (props) => {
             </div>
             <div className="row-box w-100 grow">
                 <GroupBox title="Hotkeys" className="w-50">
+                    <div className="row-box">
+                        <KeyboardListeningInput value={startKeyDisplay} onChange={setStartKey} disabled={isPlaying} placeholder="Start" />
+                        <KeyboardListeningInput value={stopKeyDisplay} onChange={setStopKey} disabled={isPlaying} placeholder="Stop" />
+                        <KeyboardListeningInput value={toggleKeyDisplay} onChange={setToggleKey} disabled={isPlaying} placeholder="Toggle" />
+                    </div>
                 </GroupBox>
+            </div>
+            <div className="row-box w-100 grow">
                 <GroupBox title="Other" className="w-50">
                 </GroupBox>
             </div>

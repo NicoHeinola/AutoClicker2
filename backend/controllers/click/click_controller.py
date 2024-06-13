@@ -2,11 +2,11 @@ from threading import Thread
 from typing import Dict
 from flask import Flask, make_response, request
 from flask_socketio import SocketIO
-from clicker.Clicker import Clicker
+from utils.click.clicker import Clicker
 from controllers.base_controller import BaseController
 from database.database import db
 from models.settings_model import Settings
-from utils.SettingsUtil import SettingsUtil
+from utils.settings.settings_util import SettingsUtil
 
 
 class ClickController(BaseController):

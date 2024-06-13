@@ -6,11 +6,15 @@ from flask_cors import CORS
 import socket
 import os
 from dotenv import load_dotenv
-from clicker.Clicker import Clicker
+from utils.click.clicker import Clicker
 from controllers.click.click_controller import ClickController
 from controllers.settings.settings_controller import SettingsController
 from database.database import db
-from utils.SettingsUtil import SettingsUtil
+from utils.hotkeys.hotkey_manager import HotkeyManager
+from utils.hotkeys.hotkey_socket import HotkeySocket
+from utils.settings.settings_util import SettingsUtil
+import logging
+from logging_setup import logger
 
 
 def database_exists(app: Flask):
@@ -33,17 +37,19 @@ load_dotenv(os.path.join(BASEDIR, ".env"))
 
 port: int = int(os.getenv("PORT"))
 host: str = os.getenv("HOST")
+build_mode: str = os.getenv("BUILD_MODE")
 
 # If port is in use, quit
-if is_port_in_use(host, port):
-    print("Port is already in use!")
-    sys.exit(-1)
+if build_mode == "RELASE":
+    if is_port_in_use(host, port):
+        logger.critical("The port {port} is already in use!")
+        sys.exit(-1)
 
 app: Flask = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SECRET_KEY'] = 'SOMECOOLSECRETKEYTHATDOESNTREALLYMATTERINTHISCASE!'
 
-socketio: SocketIO = SocketIO(app, cors_allowed_origins="*", async_mode="eventlet")
+socketio: SocketIO = SocketIO(app, cors_allowed_origins="*", async_mode="threading")
 CORS(app)
 migrate: Migrate = Migrate(app, db)
 
@@ -62,10 +68,15 @@ with app.app_context():
     # Apply the latest migrations if the database already exists
     upgrade()
 
-SettingsController(app, socketio)
+hotkey_manager: HotkeyManager = HotkeyManager()
+hotkey_manager.start_listening_to_keys()
+hotkey_socket: HotkeySocket = HotkeySocket(hotkey_manager, app, socketio)
+
+SettingsController(app, socketio, hotkey_socket)
 ClickController(app, socketio)
 
 Clicker()
 SettingsUtil.initialize_settings(app)
 
 socketio.run(app, host=host, port=port, debug=os.getenv("BUILD_MODE") == "DEBUG")
+hotkey_manager.stop_listening_to_keys()

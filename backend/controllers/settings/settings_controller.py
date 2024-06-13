@@ -1,14 +1,20 @@
 from typing import Dict
 from flask import Flask, make_response, request
 from flask_socketio import SocketIO
-from clicker.Clicker import Clicker
+from utils.click.clicker import Clicker
 from controllers.base_controller import BaseController
 from database.database import db
 from models.settings_model import Settings
-from utils.SettingsUtil import SettingsUtil
+from utils.hotkeys.hotkey_socket import HotkeySocket
 
 
 class SettingsController(BaseController):
+
+    def __init__(self, app: Flask, socket: SocketIO, hotkey_socket: HotkeySocket) -> None:
+        super().__init__(app, socket)
+
+        self._hotkey_socket: HotkeySocket = hotkey_socket
+
     def _register_routes(self) -> None:
         base_route: str = "/settings"
 
@@ -48,22 +54,28 @@ class SettingsController(BaseController):
                 settings.click_position_type = data["click-position-type"]
 
             if "start-hotkey" in data:
-                settings.start_hotkey = data["start-hotkey"]
+                keys: str = data["start-hotkey"]
+                settings.start_hotkey = keys
+                self._hotkey_socket.set_start_key(keys.split("+"))
 
             if "start-hotkey-display" in data:
                 settings.start_hotkey_display = data["start-hotkey-display"]
 
             if "stop-hotkey" in data:
-                settings.stop_hotkey = data["stop-hotkey"]
+                keys: str = data["stop-hotkey"]
+                settings.stop_hotkey = keys
+                self._hotkey_socket.set_stop_key(keys.split("+"))
 
             if "stop-hotkey-display" in data:
                 settings.stop_hotkey_display = data["stop-hotkey-display"]
 
             if "toggle-hotkey" in data:
-                settings.stop_hotkey = data["stop-hotkey"]
+                keys: str = data["toggle-hotkey"]
+                settings.toggle_hotkey = keys
+                self._hotkey_socket.set_toggle_key(keys.split("+"))
 
             if "toggle-hotkey-display" in data:
-                settings.stop_hotkey_display = data["stop-hotkey-display"]
+                settings.toggle_hotkey_display = data["toggle-hotkey-display"]
 
             Clicker.clicker.deserialize(data)
 

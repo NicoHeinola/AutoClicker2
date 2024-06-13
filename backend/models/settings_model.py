@@ -39,5 +39,4 @@ class Settings(BaseModel):
             "stop-hotkey-display": self.stop_hotkey_display,
             "toggle-hotkey": self.toggle_hotkey,
             "toggle-hotkey-display": self.toggle_hotkey_display
-
         }

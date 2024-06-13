@@ -1,6 +1,5 @@
 from flask import Flask
-import sqlalchemy
-from clicker.Clicker import Clicker
+from utils.click.clicker import Clicker
 from database.database import db
 from models.settings_model import Settings
 

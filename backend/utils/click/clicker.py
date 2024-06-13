@@ -1,6 +1,5 @@
 import time
-import keyboard
-from utils.ClickUtil import ClickUtil
+from utils.click.click_util import ClickUtil
 
 
 class Clicker:
@@ -112,9 +111,6 @@ class Clicker:
 
             # Perform click every "sleep_time_ms"
             if elapsed_time_s > click_interval_s:
-                if keyboard.is_pressed("g"):
-                    self.stop_clicking()
-
                 # How much we offset from the target cps
                 overflow_time_s: float = elapsed_time_s - click_interval_s
                 start_time_s = time.perf_counter() - overflow_time_s
