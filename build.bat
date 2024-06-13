@@ -19,10 +19,10 @@ rmdir /s /q build
 rmdir /s /q dist
 
 REM Default variables
-set name=ActionScripter
+set name=AutoClicker2
 
 REM Hidden imports
-set "HiddenImportsList=engineio.async_drivers.eventlet eventlet.hubs.epolls eventlet.hubs.kqueue eventlet.hubs.selects dns.asyncbackend dns.asyncquery dns.asyncresolver dns.e164 dns.namedict dns.tsigkeyring dns.versioned dns.dnssec logging.config"
+set "HiddenImportsList=engineio.async_drivers.threading dns.asyncbackend dns.asyncquery dns.asyncresolver dns.e164 dns.namedict dns.tsigkeyring dns.versioned dns.dnssec logging.config"
 set "HiddenImports="
 for %%a in (%HiddenImportsList%) do (
     REM Concatenate the strings with "--hidden-import"
@@ -30,7 +30,7 @@ for %%a in (%HiddenImportsList%) do (
 )
 
 REM Excluded modules
-set "ExcludedModuleList=PIL tkinter pyinstaller"
+set "ExcludedModuleList=tkinter pyinstaller"
 set "ExcludedModules="
 for %%a in (%ExcludedModuleList%) do (
     REM Concatenate the strings with "--hidden-import"
@@ -38,7 +38,9 @@ for %%a in (%ExcludedModuleList%) do (
 )
 
 REM set correct venv
-call .\.venv\Scripts\activate.bat
+IF EXIST .\.venv\Scripts\activate.bat (
+    call .\.venv\Scripts\activate.bat
+)
 
 REM Install PyInstaller if it is not already installed
 pip show pyinstaller >nul 2>&1
@@ -55,14 +57,12 @@ echo %seperatorLvl2%
 echo Excluded modules: %ExcludedModules%
 echo %seperatorLvl2%
 
-pyinstaller --onedir --optimize=2 --noconsole --clean --icon="./icon.ico" --name=%name% %HiddenImports% %ExcludedModules% app.py
+pyinstaller --onedir --optimize=2 --console --clean --add-data="./images;./images" --icon="./images/icons/icon_clicking.ico" --name=%name% %HiddenImports% %ExcludedModules% app.py
 
-REM Copy necessary files like .env and migrations
-
-echo %seperatorLvl2%
-echo Copying necessary files & folders
 copy "./.env_release" "./dist/%name%/_internal/.env"
 robocopy "./migrations" "./dist/%name%/migrations" /E /COPY:DAT /R:2 /W:5 /NFL /NDL /NJH /NJS >nul
+
+echo %seperatorLvl2%
 echo Backend is built
 echo %seperatorLvl1%
 echo Building frontend
@@ -81,12 +81,16 @@ cd ../
 robocopy "./backend/dist/%name%" "./build/%name%" /E /COPY:DAT /R:2 /W:5 /NFL /NDL /NJH /NJS >nul
 
 mkdir ".\build\%name%\frontend"
-copy ".\frontend\src-tauri\target\release\%name%.exe" ".\build\%name%\frontend\%name%.exe"
+copy ".\frontend\src-tauri\target\release\%name%.exe" ".\build\%name%\frontend\%name%_frontend.exe"
 
 echo %seperatorLvl2%
 echo Creating a release zip
-powershell -command "Compress-Archive -Path '.\build\%name%\*' -DestinationPath '.\build\ActionScripter.zip'"
+powershell -command "Compress-Archive -Path '.\build\%name%\*' -DestinationPath '.\build\%name%_portable.zip'"
 echo %seperatorLvl1%
 echo Build is complete
+echo %seperatorLvl1%
+echo Building installer
+echo %seperatorLvl2%
+call ./build_installer.bat
 
 pause

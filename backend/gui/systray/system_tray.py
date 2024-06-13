@@ -1,4 +1,5 @@
 import os
+import sys
 import time
 from PIL import Image
 import pystray
@@ -8,11 +9,12 @@ from utils.events.event_emitter import EventEmitter
 
 
 class SystemTray(EventEmitter):
+
     def __init__(self) -> None:
         super().__init__()
 
-        self._icon_clicking_path: str = os.path.join("images", "icons", "icon_clicking.ico")
-        self._icon_not_clicking_path: str = os.path.join("images", "icons", "icon_not_clicking.ico")
+        self._icon_clicking_path: str = SystemTray.resource_path(os.path.join("images", "icons", "icon_clicking.ico"))
+        self._icon_not_clicking_path: str = SystemTray.resource_path(os.path.join("images", "icons", "icon_not_clicking.ico"))
         self._icon_image_clicking: Image = Image.open(self._icon_clicking_path)
         self._icon_image_not_clicking: Image = Image.open(self._icon_not_clicking_path)
 
@@ -27,6 +29,17 @@ class SystemTray(EventEmitter):
         self._last_click_time_s: float = time.perf_counter()
 
         self._is_clicking: bool = False
+
+    @staticmethod
+    def resource_path(relative_path: str):
+        """ Get absolute path to resource, works for dev and for PyInstaller """
+        try:
+            # PyInstaller creates a temp folder and stores path in _MEIPASS
+            base_path = sys._MEIPASS
+        except AttributeError:
+            base_path = os.path.abspath(".")
+
+        return os.path.join(base_path, relative_path)
 
     def _show(self) -> None:
         self.stop()

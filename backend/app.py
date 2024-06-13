@@ -33,9 +33,10 @@ def is_port_in_use(host: str, port: int):
 
 
 def open_frontend():
-    front_path: str = os.path.join(os.getcwd(), "frontend", "AutoClicker2.exe")
+    front_path: str = os.path.join(os.getcwd(), "frontend", "AutoClicker2_frontend.exe")
 
     if not os.path.exists(front_path):
+        logger.warning(f"Frontend not found '{front_path}'")
         return
 
     os.startfile(front_path)
@@ -72,15 +73,14 @@ with app.app_context():
     # Apply the latest migrations if the database already exists
     upgrade()
 
-if os.environ.get("WERKZEUG_RUN_MAIN") == "true":
+if os.environ.get("WERKZEUG_RUN_MAIN") == "true" or build_mode == "RELEASE":
     # Frontend settings and basic checks
     if build_mode == "RELEASE":
         open_frontend()
 
         if is_port_in_use(host, port):
             logger.critical("The port {port} is already in use!")
-            sys.exit(0)
-
+            sys.exit()
     # Hotkeys
     hotkey_manager: HotkeyManager = HotkeyManager()
     hotkey_manager.start_listening_to_keys()
@@ -89,7 +89,7 @@ if os.environ.get("WERKZEUG_RUN_MAIN") == "true":
     # System tray
     def on_exit():
         if build_mode == "RELEASE":
-            sys.exit(0)
+            os._exit(1)
 
     def on_show():
         if build_mode == "RELEASE":
@@ -110,4 +110,4 @@ if os.environ.get("WERKZEUG_RUN_MAIN") == "true":
     Clicker()
     SettingsUtil.initialize_settings(app, hotkey_socket)
 
-socketio.run(app, host=host, port=port, debug=os.getenv("BUILD_MODE") == "DEBUG")
+socketio.run(app, host=host, port=port, debug=os.getenv("BUILD_MODE") == "DEBUG", allow_unsafe_werkzeug=True)

@@ -53,7 +53,7 @@ class Clicker:
         return self._play_state == "playing"
 
     def start_clicking_thread(self) -> None:
-        thread: Thread = Thread(target=self.start_clicking)
+        thread: Thread = Thread(target=self.start_clicking, daemon=True)
         thread.start()
 
     def start_clicking(self) -> None:
