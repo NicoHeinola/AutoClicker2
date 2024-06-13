@@ -14,7 +14,6 @@ const TextInput = (props) => {
                 const wholePart = splitNumber[0];
                 let decimalPart = splitNumber[1];
                 decimalPart = decimalPart.substring(0, maxDecimals);
-                console.log(decimalPart);
                 decimalPart = decimalPart.replace(/\.?0+$/, '');
                 const newNumberString = `${wholePart}.${decimalPart}`
                 number = Number(newNumberString);
