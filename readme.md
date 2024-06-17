@@ -1,0 +1,2 @@
+# About
+AutoClicker2 is an updated version of AutoClicker which I built a few years ago. It is around 50% more accurate with clicks and 150-300% faster. AutoClicker2 also introduces a very modern UI compared to the old one and an updater!
