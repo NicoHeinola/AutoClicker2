@@ -10,10 +10,15 @@ import Menu from 'components/menu/Menu';
 import updateAPI from "apis/updateAPI";
 import appAPI from "apis/appAPI";
 import { exit } from '@tauri-apps/api/process';
+import InfoPopup from 'components/popup/InfoPopup';
+import { useState } from 'react';
 
 function App(props) {
 
   const { setPlayStateCall } = props;
+
+  const [updatePopupVisible, setUpdatePopupVisible] = useState(false);
+  const [noUpdatePopupVisible, setNoUpdatePopupVisible] = useState(false);
 
   useDisableHotkeys();
   usePlayStateSocket(setPlayStateCall);
@@ -24,17 +29,36 @@ function App(props) {
     const update_url = response.data;
 
     if (!update_url) {
-      return;
+      setNoUpdatePopupVisible(true);
+    } else {
+      setUpdatePopupVisible(true);
     }
+  }
 
+  const installUpdates = async () => {
     await updateAPI.installLatestUpdate();
     appAPI.quitApp();
     exit(1);
   }
 
+  const closePopups = () => {
+    setUpdatePopupVisible(false);
+    setNoUpdatePopupVisible(false);
+  }
+
   const menuItems = [
     {
-      "name": "Update",
+      "name": "File",
+      "items": [
+        {
+          "name": "Exit",
+          "type": "item",
+          "onClick": exit
+        },
+      ],
+    },
+    {
+      "name": "Help",
       "items": [
         {
           "name": "Check for updates",
@@ -47,12 +71,13 @@ function App(props) {
 
   return (
     <div className="app">
-      <Menu items={menuItems}>
-      </Menu>
+      <Menu items={menuItems} />
+      <InfoPopup visible={updatePopupVisible} onVisibilityChange={setUpdatePopupVisible} buttons={[{ "text": "Install", onClick: installUpdates }, { "text": "Cancel", onClick: closePopups }]} texts={["A new version has been released!", "Would you like to update?"]} />
+      <InfoPopup icon="exclamation" visible={noUpdatePopupVisible} onVisibilityChange={setNoUpdatePopupVisible} buttons={[{ "text": "Ok", onClick: closePopups }]} texts={["There are currently no updates available."]} />
       <Routes>
         <Route path='/' element={<FrontPageView />} />
       </Routes>
-    </div>
+    </div >
   );
 }
 

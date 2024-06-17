@@ -1,0 +1,98 @@
+@import "styles/variables.scss";
+
+.info-popup {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+
+    width: 270px;
+    min-height: 225px;
+    padding: 20px;
+    padding-top: 0;
+
+    text-align: center;
+
+    .icon-container {
+        position: relative;
+        height: 45px;
+        width: 100%;
+
+        .icon-wrapper {
+            position: absolute;
+            top: -100%;
+            left: 50%;
+            transform: translate(-50%, 0);
+
+            height: 200%;
+            aspect-ratio: 1;
+            border-radius: 50%;
+
+            z-index: 50;
+
+            &.info {
+                background: $info-color;
+            }
+
+            .icon {
+                position: absolute;
+
+                height: 90%;
+                aspect-ratio: 1;
+
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+
+                z-index: 50;
+
+                background-size: contain;
+
+                &.question {
+                    background-image: url("/../public/icons/question.png");
+                }
+
+                &.exclamation {
+                    background-image: url("/../public/icons/exclamation.png");
+                }
+            }
+        }
+    }
+
+    .items {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        flex-grow: 1;
+
+        .texts {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            flex-grow: 1;
+
+            .title {
+                position: relative;
+                margin-bottom: 10px;
+                top: -10px;
+            }
+        }
+
+        .buttons {
+            position: relative;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+
+            gap: 20px;
+            width: 100%;
+
+            >* {
+                width: 100%;
+            }
+        }
+    }
+}
