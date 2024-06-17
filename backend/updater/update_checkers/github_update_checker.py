@@ -41,6 +41,8 @@ class GithubUpdateChecker:
 
         # Check if there is a supported file type in the downloads
         assets: list = newest_release["assets"]
+        sorted_assets: dict = {}
+
         for asset in assets:
             download_url: str = asset["browser_download_url"]
             split_url: str = download_url.split(".")
@@ -52,6 +54,22 @@ class GithubUpdateChecker:
             if extension not in supported_file_types:
                 continue
 
-            return download_url, tag_name, extension
+            if extension not in sorted_assets:
+                sorted_assets[extension] = []
 
-        return "", "", ""
+            sorted_assets[extension].append({"download-url": download_url, "version": tag_name})
+
+        # If no compatible installation type was found
+        if len(sorted_assets) == 0:
+            return "", "", ""
+
+        # Return the most preferred installer
+        for extension in supported_file_types:
+            if extension not in sorted_assets:
+                continue
+
+            # Pick first compatible asset
+            assets: list = sorted_assets[extension]
+            asset: dict = assets[0]
+
+            return asset["download-url"], asset["version"], extension

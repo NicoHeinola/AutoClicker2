@@ -1,13 +1,9 @@
 import os
-from threading import Thread
-from flask import Flask, make_response
-from flask_socketio import SocketIO
-import pyautogui
-from gui.systray.system_tray import SystemTray
-from utils.click.clicker import Clicker
+from flask import make_response
 from controllers.base_controller import BaseController
-from utils.update_checkers.github_update_checker import GithubUpdateChecker
-from utils.version.version_util import VersionUtil
+from updater.installers.installer import Installer
+from updater.update_checkers.github_update_checker import GithubUpdateChecker
+from updater.util.version.version_util import VersionUtil
 
 
 class UpdateController(BaseController):
@@ -18,7 +14,7 @@ class UpdateController(BaseController):
         def check_for_updates():
             version: str = VersionUtil.get_version_number()
 
-            update_link, _, _ = GithubUpdateChecker.check_for_updates(version, "NicoHeinola", "AutoClicker2", ["zip"])
+            update_link, _, _ = GithubUpdateChecker.check_for_updates(version, "NicoHeinola", "AutoClicker2", Installer.get_supported_filetypes())
 
             return make_response(update_link, 200)
 

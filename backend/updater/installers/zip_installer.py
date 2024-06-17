@@ -12,3 +12,5 @@ class ZipInstaller(Installer):
         # Open and extract all contents of the zip file
         with zipfile.ZipFile(download_path, 'r') as zip_ref:
             zip_ref.extractall(installation_path)
+
+        return True

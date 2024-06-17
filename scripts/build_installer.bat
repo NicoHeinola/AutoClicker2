@@ -1,8 +1,15 @@
 @echo off
+
+set app_name=AutoClicker2
+
+REM Go to script folder
+cd /d %~dp0
+cd ../
+
 REM Set paths
 set INNO_SETUP_PATH="C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
-set SCRIPT_PATH=".\installer_script.iss"
-set BUILD_DIR=.\build
+set SCRIPT_PATH=".\scripts\installer_script.iss"
+set BUILD_DIR=build
 
 REM Check if Inno Setup is installed
 if not exist %INNO_SETUP_PATH% (
@@ -13,7 +20,7 @@ if not exist %INNO_SETUP_PATH% (
 
 REM Create the build directory if it doesn't exist
 if not exist %BUILD_DIR% (
-    mkdir %BUILD_DIR%
+    goto :eof
 )
 
 REM Compile the installer
@@ -28,4 +35,4 @@ if exist "%BUILD_DIR%\AutoClicker2Setup.exe" (
     exit /b 1
 )
 
-pause
+cd /d %~dp0

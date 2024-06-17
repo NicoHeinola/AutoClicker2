@@ -1,4 +1,3 @@
-import argparse
 import sys
 from flask_migrate import Migrate, stamp, upgrade
 from flask_socketio import SocketIO

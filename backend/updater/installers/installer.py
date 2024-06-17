@@ -10,6 +10,10 @@ class Installer(ABC):
     def __init__(self) -> None:
         pass
 
+    @staticmethod
+    def get_supported_filetypes() -> list:
+        return ["exe", "zip", "7z"]
+
     def _download(self, download_url: str) -> str:
         """
         Downloads a program to be ready for installation.
