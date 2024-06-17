@@ -15,6 +15,6 @@ robocopy "./backend/updater/dist/%updater_name%" "./build/%app_name%" /E /XC /XN
 
 mkdir ".\build\%app_name%\frontend"
 copy ".\frontend\src-tauri\target\release\%frontend_name%.exe" ".\build\%app_name%\frontend\%app_name%_frontend.exe"
-copy "./version" "./build/%app_name%/_internal/version"
+copy "./version" "./build/%app_name%/version"
 
 cd /d %~dp0

@@ -1,4 +1,7 @@
+import os
+import sys
 from requests import get
+from dotenv import load_dotenv
 
 
 class GithubUpdateChecker:
@@ -10,10 +13,15 @@ class GithubUpdateChecker:
         :return: Returns a download link to the newer version.
         """
 
+        BASEDIR: str = os.path.dirname(sys.argv[0])
+        load_dotenv(os.path.join(BASEDIR, ".env"))
+
         # Try to get the data from the github url
         github_url: str = f'https://api.github.com/repos/{repo_owner}/{repo_name}/releases'
+        github_token: str = os.getenv("GITHUB_ACCESS_TOKEN", "")
         headers: dict = {
             "Accept": "application/vnd.github.v3+json",
+            "Authorization": f"token {github_token}"
         }
         params: dict = {
             "per_page": 30,

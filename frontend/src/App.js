@@ -23,11 +23,11 @@ function App(props) {
     const response = await updateAPI.checkForUpdates();
     const update_url = response.data;
 
-    if (update_url === "") {
+    if (!update_url) {
       return;
     }
 
-    updateAPI.installLatestUpdate();
+    await updateAPI.installLatestUpdate();
     appAPI.quitApp();
     exit(1);
   }

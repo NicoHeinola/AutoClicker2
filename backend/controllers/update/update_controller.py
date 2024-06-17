@@ -1,4 +1,5 @@
 import os
+import subprocess
 from flask import make_response
 from controllers.base_controller import BaseController
 from updater.installers.installer import Installer
@@ -18,9 +19,11 @@ class UpdateController(BaseController):
 
             return make_response(update_link, 200)
 
-        @self._app.route(f"{base_route}/install-latest-update", methods=["POST"])
+        @self._app.route(f"{base_route}/install-latest", methods=["POST"])
         def install_latest_update():
-            updater_path: str = os.path.join(os.getcwd(), "updater.exe")
-            os.startfile(updater_path)
+            updater_path: str = os.path.join(os.getcwd(), "Updater.exe")
+
+            if os.path.exists(updater_path):
+                subprocess.Popen([updater_path])
 
             return make_response("", 200)

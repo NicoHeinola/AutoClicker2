@@ -30,7 +30,7 @@ for %%a in (%ExcludedModuleList%) do (
 
 pyinstaller --noconfirm --onedir --optimize=2 --noconsole --clean --add-data="./images;./images" --icon="./images/icons/icon_clicking.ico" --name=%backend_name% %HiddenImports% %ExcludedModules% app.py
 
-copy "./.env_release" "./dist/%backend_name%/_internal/.env"
+copy "./.env_release" "./dist/%backend_name%/.env"
 copy "../version" "./dist/%backend_name%/_internal/version"
 robocopy "./migrations" "./dist/%backend_name%/migrations" /E /COPY:DAT /R:2 /W:5 /NFL /NDL /NJH /NJS >nul
 

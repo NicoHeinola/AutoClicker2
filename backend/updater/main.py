@@ -1,6 +1,8 @@
 import os
 import sys
 import tempfile
+import time
+import traceback
 from installers.exe_installer import ExeInstaller
 from installers.installer import Installer
 from installers.installer_7z import Installer7z
@@ -11,7 +13,7 @@ from util.version.version_util import VersionUtil
 import distutils.dir_util
 import subprocess
 
-installers: dict = {"zip": ZipInstaller(), "7z": Installer7z(), "exe": ExeInstaller}
+installers: dict = {"zip": ZipInstaller(), "7z": Installer7z(), "exe": ExeInstaller()}
 
 
 def check_for_updates():
@@ -27,18 +29,18 @@ def check_for_updates():
         preferred_installers = ["exe", "7z", "zip"]
 
     # Try to find a newer version of the program
+    print("Searching for a new release...")
     version: str = VersionUtil.get_version_number()
     update_url, new_version, extension = GithubUpdateChecker.check_for_updates(version, "NicoHeinola", "AutoClicker2", installers.keys(), preferred_installers, False)
 
     if not update_url:
+        print("Couldn't find a new release.")
         return
 
     # Can't really update if this is not an executable
     if not DeleteUtil.is_an_executable():
+        print("Can't install updates in dev-mode.")
         return
-
-    # Update the version number
-    VersionUtil.update_version_number(new_version)
 
     # Copy this updater into a temp folder so we can rewrite the whole program
     temp_dir: str = tempfile.mkdtemp()
@@ -55,6 +57,7 @@ def update(update_url: str, installation_path: str, extension: str):
     global installers
 
     # Install the update
+    print("Installing the update...")
     installer: Installer = installers[extension]
     installer.download_and_install(update_url, installation_path)
 
@@ -77,16 +80,20 @@ if __name__ == "__main__":
     if not installation_path_arg or not update_url_arg or not extension_arg:
         check_for_updates()
     else:
-        # Important for running and deleting files
-        os.chdir(installation_path_arg)
-
         # Try to run the uninstaller if one exists
         uninstaller_path: str = os.path.join(installation_path_arg, "unins000.exe")
         if os.path.exists(uninstaller_path):
+            print("Uninstalling application...")
             command: list = [uninstaller_path, "/VERYSILENT"]
             subprocess.run(command, check=True)
 
-        update(update_url_arg, installation_path_arg, extension_arg)
+        # Important for running and deleting files
+        os.chdir(installation_path_arg)
+
+        try:
+            update(update_url_arg, installation_path_arg, extension_arg)
+        except Exception as e:
+            traceback.print_exc()
 
         # Delete this temporary update script
         DeleteUtil.delete_current_folder()

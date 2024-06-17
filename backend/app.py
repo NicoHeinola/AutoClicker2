@@ -44,7 +44,7 @@ def open_frontend():
 
 
 # Load .env file
-BASEDIR: str = os.path.abspath(os.path.dirname(__file__))
+BASEDIR: str = os.path.dirname(sys.argv[0])
 load_dotenv(os.path.join(BASEDIR, ".env"))
 
 port: int = int(os.getenv("PORT"))
