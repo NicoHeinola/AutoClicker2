@@ -10,8 +10,18 @@ const minimizeApp = () => {
     })
 }
 
+const quitApp = () => {
+    return axiosInstance.post(`${BASE_ROUTE}/quit`).then(response => {
+        return response;
+    }).catch(e => {
+        throw e;
+    })
+}
+
+
 const functions = {
-    minimizeApp
+    minimizeApp,
+    quitApp
 };
 
 export default functions;

@@ -1,3 +1,4 @@
+import argparse
 import sys
 from flask_migrate import Migrate, stamp, upgrade
 from flask_socketio import SocketIO
@@ -6,7 +7,8 @@ from flask_cors import CORS
 import socket
 import os
 from dotenv import load_dotenv
-from controllers.app.settings_controller import AppController
+from controllers.app.app_controller import AppController
+from controllers.update.update_controller import UpdateController
 from gui.systray.system_tray import SystemTray
 from utils.click.clicker import Clicker
 from controllers.click.click_controller import ClickController
@@ -105,6 +107,7 @@ if os.environ.get("WERKZEUG_RUN_MAIN") == "true" or build_mode == "RELEASE":
     SettingsController(app, socketio, hotkey_socket)
     AppController(app, socketio, system_tray)
     ClickController(app, socketio, system_tray)
+    UpdateController(app, socketio)
 
     # Utils
     Clicker()

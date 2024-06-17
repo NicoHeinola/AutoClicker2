@@ -1,0 +1,37 @@
+@import "styles/variables.scss";
+
+.menu {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+
+    width: 100%;
+
+    white-space: nowrap;
+    background: $menu-color;
+
+    >.menu-item-container {
+        position: relative;
+
+        .text {
+            padding: 5px 20px;
+            background: $menu-color;
+            transition: all $global-animation-duration;
+        }
+
+        &.hovered {
+            .text {
+                filter: brightness(130%);
+            }
+
+            >.sub-menu {
+                opacity: 1;
+            }
+        }
+
+        >.sub-menu {
+            left: 0;
+            top: 100%;
+        }
+    }
+}

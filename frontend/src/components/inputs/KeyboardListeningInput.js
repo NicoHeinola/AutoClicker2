@@ -5,7 +5,7 @@ import "styles/components/inputs/keyboardlisteninginput.scss";
 
 const KeyboardListeningInput = (props) => {
 
-    const { placeholder, disabled, onChange, value = "" } = props;
+    const { placeholder, disabled, onChange, className = "", value = "" } = props;
 
     const [timeLeftMS, setTimeLeftMS] = useState(0);
     const [isListeningInterval, setIsListeningInterval] = useState(null);
@@ -87,7 +87,7 @@ const KeyboardListeningInput = (props) => {
     const icons = [{ key: "keyboard", alt: "keyboard", src: "icons/keyboard.png", onClick: startListening }];
 
     return (
-        <div className="keyboard-listening-input">
+        <div className={"keyboard-listening-input " + className}>
             <TextInput value={displayValueValidated} disabled={disabled} placeholder={placeholderText} allowTyping={false} icons={icons} />
         </div>
     )

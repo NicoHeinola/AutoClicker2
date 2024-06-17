@@ -18,3 +18,8 @@ class AppController(BaseController):
         def minimize_app():
             self._system_tray.run()
             return make_response("", 200)
+
+        @self._app.route(f"{base_route}/quit", methods=["POST"])
+        def quit_app():
+            self._system_tray.exit()
+            return make_response("", 200)

@@ -152,13 +152,13 @@ const FrontPageView = (props) => {
             <div className="row-box w-100 grow">
                 <GroupBox title="Hotkeys" className="w-50">
                     <div className="row-box">
-                        <KeyboardListeningInput value={startKeyDisplay} onChange={setStartKey} disabled={isPlaying} placeholder="Start" />
-                        <KeyboardListeningInput value={stopKeyDisplay} onChange={setStopKey} disabled={isPlaying} placeholder="Stop" />
-                        <KeyboardListeningInput value={toggleKeyDisplay} onChange={setToggleKey} disabled={isPlaying} placeholder="Toggle" />
+                        <KeyboardListeningInput className="w-100" value={startKeyDisplay} onChange={setStartKey} disabled={isPlaying} placeholder="Start" />
+                        <KeyboardListeningInput className="w-100" value={stopKeyDisplay} onChange={setStopKey} disabled={isPlaying} placeholder="Stop" />
+                        <KeyboardListeningInput className="w-100" value={toggleKeyDisplay} onChange={setToggleKey} disabled={isPlaying} placeholder="Toggle" />
                     </div>
                 </GroupBox>
             </div>
-            <div className="row-box w-100 grow">
+            <div className="row-box w-100">
                 <CustomButton disabled={isPlaying} onClick={startClicking} className="w-50">Start</CustomButton>
                 <CustomButton disabled={!isPlaying} onClick={stopClicking} className="w-50">Stop</CustomButton>
             </div>

@@ -30,7 +30,7 @@ for %%a in (%HiddenImportsList%) do (
 )
 
 REM Excluded modules
-set "ExcludedModuleList=tkinter pyinstaller"
+set "ExcludedModuleList=tkinter pyinstaller pyinstaller-hooks-contrib"
 set "ExcludedModules="
 for %%a in (%ExcludedModuleList%) do (
     REM Concatenate the strings with "--hidden-import"
@@ -60,10 +60,35 @@ echo %seperatorLvl2%
 pyinstaller --onedir --optimize=2 --console --clean --add-data="./images;./images" --icon="./images/icons/icon_clicking.ico" --name=%name% %HiddenImports% %ExcludedModules% app.py
 
 copy "./.env_release" "./dist/%name%/_internal/.env"
+copy "../version" "./dist/%name%/_internal/version"
 robocopy "./migrations" "./dist/%name%/migrations" /E /COPY:DAT /R:2 /W:5 /NFL /NDL /NJH /NJS >nul
 
 echo %seperatorLvl2%
 echo Backend is built
+echo %seperatorLvl1%
+echo Building updater
+echo %seperatorLvl2%
+
+REM Build updater
+cd ../
+cd ./updater
+
+REM set correct venv
+IF EXIST .\.venv\Scripts\activate.bat (
+    call .\.venv\Scripts\activate.bat
+)
+
+if exist *.spec (
+    del /q *.spec
+)
+rmdir /s /q build
+rmdir /s /q dist
+
+pyinstaller --onedir --optimize=2 --console --clean --name=updater %ExcludedModules% main.py
+copy "../version" "./dist/updater/_internal/version"
+
+echo %seperatorLvl2%
+echo Updater is built
 echo %seperatorLvl1%
 echo Building frontend
 echo %seperatorLvl2%
@@ -79,6 +104,9 @@ echo Moving everything into a single build
 
 cd ../
 robocopy "./backend/dist/%name%" "./build/%name%" /E /COPY:DAT /R:2 /W:5 /NFL /NDL /NJH /NJS >nul
+
+mkdir ".\build\%name%\updater"
+robocopy "./updater/dist/updater" "./build/%name%/updater" /E /COPY:DAT /R:2 /W:5 /NFL /NDL /NJH /NJS >nul
 
 mkdir ".\build\%name%\frontend"
 copy ".\frontend\src-tauri\target\release\%name%.exe" ".\build\%name%\frontend\%name%_frontend.exe"

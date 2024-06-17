@@ -21,7 +21,7 @@ class SystemTray(EventEmitter):
         self._menu = [
             MenuItem('double-click-event', self._double_click_check, default=True, visible=False),
             MenuItem('Show', self._show),
-            MenuItem('Exit', self._exit),
+            MenuItem('Exit', self.exit),
         ]
 
         self._tray_icon: pystray.Icon = None
@@ -45,7 +45,7 @@ class SystemTray(EventEmitter):
         self.stop()
         self.emit("show")
 
-    def _exit(self) -> None:
+    def exit(self) -> None:
         self.stop()
         self.emit("exit")
 
