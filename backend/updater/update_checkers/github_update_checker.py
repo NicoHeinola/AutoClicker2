@@ -3,7 +3,7 @@ from requests import get
 
 class GithubUpdateChecker:
     @staticmethod
-    def check_for_updates(version_name: str, repo_owner: str, repo_name: str, supported_file_types: set, allow_prerelease: bool = False) -> tuple:
+    def check_for_updates(version_name: str, repo_owner: str, repo_name: str, supported_file_types: set, preferred_file_type_order: list = [], allow_prerelease: bool = False) -> tuple:
         """
         Tries to find a newer version of the program.
 
@@ -54,6 +54,8 @@ class GithubUpdateChecker:
             if extension not in supported_file_types:
                 continue
 
+            preferred_file_type_order.append(extension)
+
             if extension not in sorted_assets:
                 sorted_assets[extension] = []
 
@@ -64,7 +66,7 @@ class GithubUpdateChecker:
             return "", "", ""
 
         # Return the most preferred installer
-        for extension in supported_file_types:
+        for extension in preferred_file_type_order:
             if extension not in sorted_assets:
                 continue
 

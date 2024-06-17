@@ -22,14 +22,13 @@ def check_for_updates():
     uninstaller_path: str = os.path.join(current_path, "unins000.exe")
 
     # Determine if we want to reinstall the installer or using a zip in case this is a portable application
-    preferred_installers: set = {"7z", "zip", "exe"}
+    preferred_installers: set = ["7z", "zip", "exe"]
     if os.path.exists(uninstaller_path):
-        preferred_installers = {"exe", "7z", "zip"}
-    preferred_installers = preferred_installers | installers.keys()
+        preferred_installers = ["exe", "7z", "zip"]
 
     # Try to find a newer version of the program
     version: str = VersionUtil.get_version_number()
-    update_url, new_version, extension = GithubUpdateChecker.check_for_updates(version, "NicoHeinola", "AutoClicker2", preferred_installers, False)
+    update_url, new_version, extension = GithubUpdateChecker.check_for_updates(version, "NicoHeinola", "AutoClicker2", installers.keys(), preferred_installers, False)
 
     if not update_url:
         return
