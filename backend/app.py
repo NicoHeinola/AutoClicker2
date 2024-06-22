@@ -49,7 +49,7 @@ load_dotenv(os.path.join(BASEDIR, ".env"))
 
 port: int = int(os.getenv("PORT"))
 host: str = os.getenv("HOST")
-build_mode: str = os.getenv("BUILD_MODE")
+APP_BUILD_MODE: str = os.getenv("APP_BUILD_MODE")
 
 app: Flask = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
@@ -74,9 +74,9 @@ with app.app_context():
     # Apply the latest migrations if the database already exists
     upgrade()
 
-if os.environ.get("WERKZEUG_RUN_MAIN") == "true" or build_mode == "RELEASE":
+if os.environ.get("WERKZEUG_RUN_MAIN") == "true" or APP_BUILD_MODE == "RELEASE":
     # Frontend settings and basic checks
-    if build_mode == "RELEASE":
+    if APP_BUILD_MODE == "RELEASE":
         open_frontend()
 
         if is_port_in_use(host, port):
@@ -89,11 +89,11 @@ if os.environ.get("WERKZEUG_RUN_MAIN") == "true" or build_mode == "RELEASE":
 
     # System tray
     def on_exit():
-        if build_mode == "RELEASE":
+        if APP_BUILD_MODE == "RELEASE":
             os._exit(1)
 
     def on_show():
-        if build_mode == "RELEASE":
+        if APP_BUILD_MODE == "RELEASE":
             open_frontend()
 
     system_tray: SystemTray = SystemTray()
@@ -112,4 +112,4 @@ if os.environ.get("WERKZEUG_RUN_MAIN") == "true" or build_mode == "RELEASE":
     Clicker()
     SettingsUtil.initialize_settings(app, hotkey_socket)
 
-socketio.run(app, host=host, port=port, debug=os.getenv("BUILD_MODE") == "DEBUG", allow_unsafe_werkzeug=True)
+socketio.run(app, host=host, port=port, debug=os.getenv("APP_BUILD_MODE") == "DEBUG", allow_unsafe_werkzeug=True)
