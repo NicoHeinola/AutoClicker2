@@ -80,7 +80,7 @@ class Clicker:
             click_interval_s = self._click_interval_ms / 1000.0
 
         # Determine is it possible to sleep instead of running the while loop non-stop
-        MIN_SLEEP_TIME_S: float = 0.03
+        MIN_SLEEP_TIME_S: float = 0.015
 
         # We don't want to sleep forever
         MAX_SLEEP_TIME_S: float = 5
