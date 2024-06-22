@@ -20,14 +20,19 @@ class GithubUpdateChecker:
         github_url: str = f'https://api.github.com/repos/{repo_owner}/{repo_name}/releases'
         github_token: str = os.getenv("GITHUB_ACCESS_TOKEN", "")
         headers: dict = {
-            "Accept": "application/vnd.github.v3+json",
-            "Authorization": f"token {github_token}"
+            "Accept": "application/vnd.github.v3+json"
         }
+
+        if github_token:
+            headers["Authorization"] = f"token {github_token}"
+
         params: dict = {
             "per_page": 30,
             "page": 1
         }
         response = get(github_url, headers=headers, params=params)
+
+        print(response.status_code)
 
         if response.status_code != 200:
             return "", "", ""
